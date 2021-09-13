@@ -60,6 +60,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
     setTitle(title);
     setUrl(url);
     setText(text);
+    setAnswer('');
   };
 
   return (
