@@ -1,8 +1,14 @@
 import React from 'react';
-import { convert } from 'hangul-romanization';
 import jsTokens from 'js-tokens';
+import { convert } from 'hangul-romanization';
 
-const Home = ({ title, url, text }) => {
+import { getText } from '../lib/text';
+
+const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
+  const [title, setTitle] = React.useState(initialTitle);
+  const [url, setUrl] = React.useState(initialUrl);
+  const [text, setText] = React.useState(initialText);
+
   const [answer, setAnswer] = React.useState('');
   const handleAnswerChange = e => {
     const { value } = e.target;
@@ -46,6 +52,16 @@ const Home = ({ title, url, text }) => {
     }
   };
 
+  const handleReload = async () => {
+    const { title, url, text } = await fetch('/api/text').then(res =>
+      res.json()
+    );
+
+    setTitle(title);
+    setUrl(url);
+    setText(text);
+  };
+
   return (
     <div className="flex flex-col px-32 justify-center space-y-8 min-h-screen bg-[#f7f5f1]">
       <div>
@@ -58,11 +74,16 @@ const Home = ({ title, url, text }) => {
             rel="noopener noreferrer"
           >
             ko.wikipedia.org
-          </a>
+          </a>{' '}
+          ·{' '}
+          <span className="cursor-pointer" onClick={handleReload}>
+            ↻
+          </span>
         </div>
         <div className="w-full mt-2 text-3xl">
           {Array.from(jsTokens(text), ({ value }, index) => (
             <span
+              key={index}
               className={
                 matchResult
                   ? matchResult[index] && matchResult[index].match
@@ -80,7 +101,10 @@ const Home = ({ title, url, text }) => {
       {matchResult ? (
         <div className="p-4 w-full min-h-[228px] text-xl">
           {matchResult.map(({ answerToken, match }) => (
-            <span className={match ? 'text-green-800' : 'text-red-800'}>
+            <span
+              key={answerToken}
+              className={match ? 'text-green-800' : 'text-red-800'}
+            >
               {answerToken}
             </span>
           ))}
@@ -108,31 +132,8 @@ const Home = ({ title, url, text }) => {
 };
 
 export async function getServerSideProps() {
-  const {
-    query: {
-      random: [random],
-    },
-  } = await fetch(
-    'https://ko.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&list=random&rnnamespace=0&rnlimit=1'
-  ).then(res => res.json());
-
-  const { title } = random;
-  const encodedTitle = encodeURIComponent(title);
-
-  const {
-    query: {
-      pages: [page],
-    },
-  } = await fetch(
-    `https://ko.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=extracts&titles=${encodedTitle}&explaintext&exchars=260&exsectionformat=plain`
-  ).then(res => res.json());
-
   return {
-    props: {
-      title,
-      url: `https://ko.wikipedia.org/wiki/${encodedTitle}`,
-      text: page.extract,
-    },
+    props: await getText(),
   };
 }
 
