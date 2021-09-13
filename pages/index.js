@@ -18,11 +18,11 @@ const Home = ({ title, url, text }) => {
       const romanized = convert(text);
       const tokenizedRomanization = Array.from(
         jsTokens(romanized),
-        token => token.value
+        ({ value }) => value
       );
       const tokenizedAnswer = Array.from(
         jsTokens(answer),
-        token => token.value
+        ({ value }) => value
       );
 
       const length = Math.min(
@@ -37,7 +37,7 @@ const Home = ({ title, url, text }) => {
         const answerToken = tokenizedAnswer[index];
 
         result.push({
-          token: answerToken,
+          answerToken,
           match: answerToken.toLowerCase() === romanizationToken,
         });
       }
@@ -60,14 +60,28 @@ const Home = ({ title, url, text }) => {
             ko.wikipedia.org
           </a>
         </div>
-        <div className="w-full mt-2 text-3xl">{text}</div>
+        <div className="w-full mt-2 text-3xl">
+          {Array.from(jsTokens(text), ({ value }, index) => (
+            <span
+              className={
+                matchResult
+                  ? matchResult[index] && matchResult[index].match
+                    ? 'text-green-800'
+                    : 'text-red-800'
+                  : 'text-black'
+              }
+            >
+              {value}
+            </span>
+          ))}
+        </div>
       </div>
 
       {matchResult ? (
         <div className="p-4 w-full min-h-[228px] text-xl">
-          {matchResult.map(({ token, match }) => (
+          {matchResult.map(({ answerToken, match }) => (
             <span className={match ? 'text-green-800' : 'text-red-800'}>
-              {token}
+              {answerToken}
             </span>
           ))}
         </div>
