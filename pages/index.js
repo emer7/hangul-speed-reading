@@ -16,10 +16,18 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
     setAnswer(value.replace(/[\n]+/g, '').replace(/[\s]+/g, ' '));
   };
 
+  const inputRef = React.useRef();
+
   const [matchResult, setMatchResult] = React.useState();
   const handleButtonClick = () => {
     if (matchResult) {
       setMatchResult();
+
+      const { current } = inputRef;
+      const { length } = current.value;
+
+      current.focus();
+      current.setSelectionRange(length, length);
     } else {
       const romanized = convert(text);
       const tokenizedRomanization = Array.from(
@@ -112,6 +120,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
         </div>
       ) : (
         <textarea
+          ref={inputRef}
           className="resize-none p-4 w-full bg-transparent focus:outline-none text-xl"
           placeholder="Type here"
           rows="7"
