@@ -44,7 +44,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
 
         result.push({
           answerToken,
-          match: answerToken.toLowerCase() === romanizationToken,
+          match: answerToken.toLowerCase() === romanizationToken.toLowerCase(),
         });
       }
 
