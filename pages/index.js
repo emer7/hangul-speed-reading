@@ -123,9 +123,9 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
 
       {matchResult ? (
         <div className="p-4 w-full min-h-[228px] text-xl">
-          {matchResult.map(({ answerToken, match }) => (
+          {matchResult.map(({ answerToken, match }, index) => (
             <span
-              key={answerToken}
+              key={index}
               className={match ? 'text-green-800' : 'text-red-800'}
             >
               {answerToken}
