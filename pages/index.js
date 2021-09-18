@@ -13,7 +13,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
   const handleAnswerChange = e => {
     const { value } = e.target;
 
-    setAnswer(value);
+    setAnswer(value.replace(/[\n]+/g, '').replace(/[\s]+/g, ' '));
   };
 
   const [matchResult, setMatchResult] = React.useState();
