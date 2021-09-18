@@ -19,7 +19,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
   const inputRef = React.useRef();
 
   const [matchResult, setMatchResult] = React.useState();
-  const handleButtonClick = () => {
+  const handleCheckAnswer = () => {
     if (matchResult) {
       setMatchResult();
 
@@ -70,6 +70,20 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
     setText(text);
     setAnswer('');
   };
+
+  const handleEnter = ({ key }) => {
+    if (key === 'Enter') {
+      handleCheckAnswer();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('keyup', handleEnter);
+
+    return () => {
+      document.removeEventListener('keyup', handleEnter);
+    };
+  }, [answer, matchResult]);
 
   return (
     <div className="flex flex-col px-32 justify-center space-y-8 min-h-screen bg-[#f7f5f1]">
@@ -129,13 +143,14 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
         />
       )}
 
-      <div className="flex justify-end">
-        <button
-          className="border-2 border-black py-1 px-3 hover:bg-[#454443] hover:text-[#f7f5f1]"
-          onClick={handleButtonClick}
-        >
-          {matchResult ? 'fix' : 'check'}
-        </button>
+      <div className="flex justify-end text-gray-400">
+        <div>
+          press{' '}
+          <span className="py-0.5 px-1.5 border border-gray-400 rounded-md font-mono">
+            Enter
+          </span>{' '}
+          to check the answer
+        </div>
       </div>
     </div>
   );
