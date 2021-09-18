@@ -143,7 +143,7 @@ const Home = ({ title: initialTitle, url: initialUrl, text: initialText }) => {
         />
       )}
 
-      <div className="flex justify-end text-gray-400">
+      <div className="flex justify-end text-gray-400 text-sm">
         <div>
           press{' '}
           <span className="py-0.5 px-1.5 border border-gray-400 rounded-md font-mono">
